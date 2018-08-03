@@ -1,0 +1,169 @@
+package com.teamsun.reduce;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+
+import com.teamsun.common.Constants;
+/**
+ * @author wpf
+ *
+ */
+public class DqcReduce extends Reducer<Text, Text, Text, Text>{
+	Pattern pattern = Pattern.compile("^[ ]*\n");
+	Matcher matcher;
+	@Override
+	protected void reduce(Text key, Iterable<Text> value, Reducer<Text, Text, Text, Text>.Context context) 
+	throws IOException, InterruptedException {
+		String sv = key.toString();
+		this.matcher = this.pattern.matcher(sv);
+		if(this.matcher.find())
+			sv=leftTrim(sv);
+		//判断一行数据以-|-|结尾可以处理
+		if(this.replaceRF(sv).contains("-|-|")){
+			String[] items = this.replaceRF(sv).split("\\|\\-\\|");
+			for(String str:items){
+				mos.write(Constants.OUTPUTFILENAME, null, new Text(str));
+			}
+		}else{
+		String[] items = replaceRF(sv).split(Constants.HIVE_RF,Integer.MAX_VALUE);
+		if (this.colnumSize != items.length) {
+			items=repairSeparator(this.replaceRF(sv));
+		}
+		if (this.colnumSize != items.length) {
+			mos.write(Constants.ERRORFILENAME,  new Text(sv+Constants.LF),null,ErrorOutput+Constants.ERRORFILENAME);
+			mos.write(Constants.ERRORFILENAME, new Text("[real:"+items.length+"],"+"[expected:"+this.colnumSize+"]"),null,ErrorOutput+Constants.ERRORFILENAME);
+			return;
+		}
+		val="";
+		boolean isFirst = true;
+		
+		for(String seq :seqs){
+			if(isFirst){
+				val=items[Integer.parseInt(seq)];
+				isFirst=false;
+			}else {
+				val+=Constants.HIVE_RF+items[Integer.parseInt(seq)];
+			}
+		}
+//		String[] DataLength = val.split(Constants.HIVE_RF);
+			if(judge_length(val)){
+			mos.write(Constants.OUTPUTFILENAME, null, new Text(this.val));
+			}else {
+			mos.write(Constants.ERRORDATAFILENAME, null, new Text(this.val.replaceAll(Constants.HIVE_RF, Constants.RF) + Constants.LF),ErrorOutput+Constants.ERRORDATAFILENAME);
+			}
+		}
+	}
+	public boolean judge_length(String col) throws IOException, InterruptedException{
+		String[] DataLength = col.split("\001");
+		int i = 0;
+		for(String dll:DataLength){
+		int method_code = Integer.parseInt(col_data_length[i].substring(col_data_length[i].indexOf('+')+1));
+		if(method_code == 0){
+			i++;
+			continue;
+		}
+		//校验(CHAR,NCHAR,NVARCHAR,NVARCHAR,VARCHAR,VARCHAR2)验证数据长度---method=1
+		if(method_code == 1){
+		if ("".equals(col_data_length[i].substring(0, col_data_length[i].indexOf('+')))
+					|| (dll.length() <= Integer.parseInt(col_data_length[i]
+							.substring(0, col_data_length[i].indexOf('+'))))) {
+			i++;
+			continue;
+		}else {
+				mos.write(Constants.ERRORLOGFILENAME,  new Text(
+							(this.val.replaceAll(Constants.HIVE_RF,
+										Constants.RF) + Constants.LF) + " "
+								+ "[the failed column is:" + (i+1) +"]," + "[fail data is:"+dll+"],"+" [real:"
+								+ dll.length()+"]," + "[expected:"
+								+ col_data_length[i].substring(0, col_data_length[i].indexOf('+')))+"]"+dll,null);
+			return false;
+		}
+		}
+		//校验数值型（FLOAT,LONG,INT,INTEGER,NUMBER）---method=2
+		if(method_code == 2){
+			if ("".equals(col_data_length[i].substring(0, col_data_length[i].indexOf('+')))){
+				i++;
+				continue;
+			}
+			int p = Integer.parseInt(col_data_length[i].substring(0, col_data_length[i].indexOf('+')));
+			int flag = dll.contains(".") ? p + 1 : p;
+			flag = dll.contains("-") ? flag + 1 : flag;
+			if ((col_data_length[i].substring(0, col_data_length[i].indexOf('+')) == "")
+						|| (dll.length() <= flag)) {
+				i++;
+				continue;
+			}else {
+					mos.write(Constants.ERRORLOGFILENAME,  new Text(
+								(this.val.replaceAll(Constants.HIVE_RF,
+											Constants.RF) + Constants.LF) + " "
+									+ "[the failed column is:" + (i+1) +"]," + "[data is:"+dll+"],"+" [real:"
+									+ dll.length()+"]," + "[expected:"
+									+ col_data_length[i].substring(0, col_data_length[i].indexOf('+')))+"]",null);
+				return false;
+			}
+			}
+		
+		}
+		return true;
+	}
+	
+	public String[] repairSeparator(String value){
+		if(value.contains("+|")){
+			value = value.replaceAll("\\+\\|", Constants.HIVE_RF);
+			String[] items = value.split(Constants.HIVE_RF, colnumSize);
+//			String[] items = value.split(Constants.HIVE_RF);
+			if(colnumSize == items.length )
+				return items;
+		}else if(value.contains("|+")){
+			value = value.replaceAll("\\|\\+", Constants.HIVE_RF);
+			String[] items = value.split(Constants.HIVE_RF, colnumSize);
+//			String[] items = value.split(Constants.HIVE_RF);
+			if(colnumSize == items.length )
+				return items;
+		}
+//		return new String[0];
+		return value.split(Constants.HIVE_RF, colnumSize);
+	}		
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String leftTrim(String str){
+		return str.replaceAll("^[ ]*", "");
+	}
+	public String replaceRF(String value){
+		return value.replaceAll("\020", "")
+				.replaceAll("\001", "")
+				.replaceAll(Constants.LINUX_LF, "")
+				.replaceAll(Constants.LINUX_LF_2, "")
+				.replaceAll(Constants.RF, Constants.HIVE_RF);
+	}
+
+	String val ;
+	String ErrorOutput;
+	private int colnumSize;
+	MultipleOutputs<Text, Text> mos;
+	private String[] seqs;
+	private String[] col_data_length;
+	protected void setup(Context context) throws IOException,
+			InterruptedException {
+		colnumSize = Integer.parseInt(context.getConfiguration().get(Constants.COLNUMSIZE));
+		mos = new MultipleOutputs<Text, Text>(context);
+		ErrorOutput = context.getConfiguration().get("Error_output");
+		seqs = context.getConfiguration().get("colSeq").split(Constants.COMMA);
+		col_data_length = context.getConfiguration().get("colData_length").split(Constants.COMMA);
+	}
+
+	@Override
+	protected void cleanup(Context context) throws IOException,
+			InterruptedException {
+		mos.close();
+	}
+	}

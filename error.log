@@ -1,0 +1,21 @@
+2017-03-29 02:54:25 ERROR [main] com.teamsun.common.DBUtil [DBUtil.java:_queryForObject(270)] - 数据库提交失败
+java.sql.SQLException: ORA-00942: 表或视图不存在
+
+	at oracle.jdbc.driver.SQLStateMapping.newSQLException(SQLStateMapping.java:74)
+	at oracle.jdbc.driver.DatabaseError.newSQLException(DatabaseError.java:110)
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:171)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:455)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:413)
+	at oracle.jdbc.driver.T4C8Oall.receive(T4C8Oall.java:1030)
+	at oracle.jdbc.driver.T4CPreparedStatement.doOall8(T4CPreparedStatement.java:194)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeForDescribe(T4CPreparedStatement.java:785)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeMaybeDescribe(T4CPreparedStatement.java:860)
+	at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1186)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeInternal(OraclePreparedStatement.java:3381)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeQuery(OraclePreparedStatement.java:3425)
+	at oracle.jdbc.driver.OraclePreparedStatementWrapper.executeQuery(OraclePreparedStatementWrapper.java:1202)
+	at org.apache.commons.dbcp.DelegatingPreparedStatement.executeQuery(DelegatingPreparedStatement.java:93)
+	at com.teamsun.common.DBUtil._queryForObject(DBUtil.java:251)
+	at com.teamsun.common.DBUtil.queryForObjectList(DBUtil.java:224)
+	at com.teamsun.metadata.TableService.getTableCols_datalength(TableService.java:116)
+	at com.teamsun.metadata.TableService.main(TableService.java:232)

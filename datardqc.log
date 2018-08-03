@@ -1,0 +1,72 @@
+2017-03-29 02:52:27 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 02:52:49 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:getConn(87)] - 获取数据库连接错误
+org.apache.commons.dbcp.SQLNestedException: Cannot create PoolableConnectionFactory (Io 异常: The Network Adapter could not establish the connection)
+	at org.apache.commons.dbcp.BasicDataSource.createDataSource(BasicDataSource.java:1225)
+	at org.apache.commons.dbcp.BasicDataSource.getConnection(BasicDataSource.java:880)
+	at com.teamsun.common.DBUtil.getConn(DBUtil.java:83)
+	at com.teamsun.common.DBUtil.initDs(DBUtil.java:65)
+	at com.teamsun.metadata.TableService.main(TableService.java:230)
+Caused by: java.sql.SQLException: Io 异常: The Network Adapter could not establish the connection
+	at oracle.jdbc.driver.SQLStateMapping.newSQLException(SQLStateMapping.java:74)
+	at oracle.jdbc.driver.DatabaseError.newSQLException(DatabaseError.java:110)
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:171)
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:227)
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:494)
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:411)
+	at oracle.jdbc.driver.PhysicalConnection.<init>(PhysicalConnection.java:490)
+	at oracle.jdbc.driver.T4CConnection.<init>(T4CConnection.java:202)
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:33)
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:465)
+	at org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:294)
+	at org.apache.commons.dbcp.BasicDataSource.validateConnectionFactory(BasicDataSource.java:1247)
+	at org.apache.commons.dbcp.BasicDataSource.createDataSource(BasicDataSource.java:1221)
+	... 4 more
+2017-03-29 02:54:22 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 02:54:24 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 02:54:24 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(115)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config_gxxzz where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 02:54:25 ERROR [main] com.teamsun.common.DBUtil [DBUtil.java:_queryForObject(270)] - 数据库提交失败
+java.sql.SQLException: ORA-00942: 表或视图不存在
+
+	at oracle.jdbc.driver.SQLStateMapping.newSQLException(SQLStateMapping.java:74)
+	at oracle.jdbc.driver.DatabaseError.newSQLException(DatabaseError.java:110)
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:171)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:455)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:413)
+	at oracle.jdbc.driver.T4C8Oall.receive(T4C8Oall.java:1030)
+	at oracle.jdbc.driver.T4CPreparedStatement.doOall8(T4CPreparedStatement.java:194)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeForDescribe(T4CPreparedStatement.java:785)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeMaybeDescribe(T4CPreparedStatement.java:860)
+	at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1186)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeInternal(OraclePreparedStatement.java:3381)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeQuery(OraclePreparedStatement.java:3425)
+	at oracle.jdbc.driver.OraclePreparedStatementWrapper.executeQuery(OraclePreparedStatementWrapper.java:1202)
+	at org.apache.commons.dbcp.DelegatingPreparedStatement.executeQuery(DelegatingPreparedStatement.java:93)
+	at com.teamsun.common.DBUtil._queryForObject(DBUtil.java:251)
+	at com.teamsun.common.DBUtil.queryForObjectList(DBUtil.java:224)
+	at com.teamsun.metadata.TableService.getTableCols_datalength(TableService.java:116)
+	at com.teamsun.metadata.TableService.main(TableService.java:232)
+2017-03-29 02:54:53 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 02:54:54 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 02:54:54 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(115)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 02:54:54 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(117)] - list size:0
+2017-03-29 02:55:26 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 02:55:27 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 02:55:27 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(115)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 02:55:27 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(117)] - list size:0
+2017-03-29 03:00:57 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 03:00:58 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 03:00:58 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(115)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 03:00:58 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(117)] - list size:0
+2017-03-29 03:02:36 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 03:02:37 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 03:02:37 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(116)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 03:02:38 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(118)] - list size:0
+2017-03-29 03:03:32 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 03:03:33 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 03:03:33 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(116)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 03:03:33 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(118)] - list size:0
+2017-03-29 03:03:55 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(64)] - 初始化数据源
+2017-03-29 03:03:57 INFO  [main] com.teamsun.common.DBUtil [DBUtil.java:initDs(71)] - 数据源初始化完毕
+2017-03-29 03:03:57 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(116)] - sql=select FIELD_LENGTH||'+'||METHOD_CODE FM from bd_int_fields_config where interface_code='ISPCS' and end_date='99991231' order by order_id
+2017-03-29 03:03:57 INFO  [main] com.teamsun.metadata.TableService [TableService.java:getTableCols_datalength(118)] - list size:0
